@@ -1,10 +1,29 @@
 module ColorRecord exposing (ColorRecord, rgba, mix)
 
+{-| This module exposes the ColorRecord type. Color records
+can be manipulated mathemaitcall, e.g., if x and y are
+color records, then so is mix x y -- it is a kind of average
+of x and y .
 
+The function rgba x y converts a color record to a string compatible
+with SVG.
+
+
+# API
+
+@docs ColorRecord, rgba, mix
+
+-}
+
+
+{-| A record which represents a color.
+-}
 type alias ColorRecord =
     { r : Int, g : Int, b : Int, a : Float }
 
 
+{-| Take the average of two ColorRecords
+-}
 mix : ColorRecord -> ColorRecord -> ColorRecord
 mix a b =
     let
@@ -34,6 +53,8 @@ intAverage i j =
         round average
 
 
+{-| Convert a ColorRecord into a string compatible with SVG
+-}
 rgba : ColorRecord -> String
 rgba color =
     "rgba(" ++ toString color.r ++ "," ++ toString color.g ++ "," ++ toString color.b ++ "," ++ toString color.a ++ ")"

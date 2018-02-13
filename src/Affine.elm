@@ -1,4 +1,14 @@
-module Affine exposing (Coefficients, linearTransform, make, transform)
+module Affine exposing (Coefficients, affineTransform, linearTransform, coefficients)
+
+{-| This module exposes two functions, affineTransform and linearTransorm, for mapping
+2D vecors to 2D vectors.
+
+
+# API
+
+@docs Coefficients, affineTransform, linearTransform, coefficients
+
+-}
 
 import Svg as S exposing (..)
 import Svg.Attributes as SA exposing (..)
@@ -11,10 +21,12 @@ type alias Rect =
     }
 
 
-{-| Coefficients carries the coefficients of an
-affine transformation
+{-| Coefficients is a data structure for the
+coefficients of an affine transformation
+
 xx = ax + b
 yy= cy + d
+
 -}
 type alias Coefficients =
     { a : Float
@@ -24,17 +36,14 @@ type alias Coefficients =
     }
 
 
-type alias Transform =
-    Coefficients -> Vector -> Vector
-
-
-{-| coefficients takes a GraphData object and
-returns an Coefficients object such that the
-associated affine transformation maps sourceRect to
-targetRect.
+{-| The coefficients function maps a pair
+of rectangles, sourceRect and targetRect,
+to a record of coeffients for an affine
+transformation. The resulting transformation
+maps sourceRect to targetRect.
 -}
-make : Rect -> Rect -> Coefficients
-make sourceRect targetRect =
+coefficients : Rect -> Rect -> Coefficients
+coefficients sourceRect targetRect =
     let
         aa =
             targetRect.size.x / sourceRect.size.x
@@ -48,14 +57,14 @@ make sourceRect targetRect =
         dd =
             targetRect.corner.y - sourceRect.corner.y + targetRect.size.y
     in
-    { a = aa, b = bb, c = cc, d = dd }
+        { a = aa, b = bb, c = cc, d = dd }
 
 
-{-| affineTransformPoint coefficients is
-an affine transformation.
+{-| affineTransform coefficients is an affine
+transformations mapping vectors to vectors.
 -}
-transform : Transform
-transform coefficients point =
+affineTransform : Coefficients -> Vector -> Vector
+affineTransform coefficients point =
     let
         x =
             coefficients.a * point.x + coefficients.b
@@ -63,10 +72,13 @@ transform coefficients point =
         y =
             coefficients.c * point.y + coefficients.d
     in
-    Vector x y
+        Vector x y
 
 
-linearTransform : Transform
+{-| linearTransform coefficients is an affine
+transformations mapping vectors to vectors.
+-}
+linearTransform : Coefficients -> Vector -> Vector
 linearTransform coefficients size =
     let
         w =
@@ -77,4 +89,4 @@ linearTransform coefficients size =
 
         -- 5.0 * size.height
     in
-    Vector w h
+        Vector w h

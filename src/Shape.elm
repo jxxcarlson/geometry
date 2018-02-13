@@ -1,9 +1,13 @@
-module Shape exposing (Shape(..), ShapeData, transform, draw, moveBy, moveTo, scaleBy)
+module Shape exposing (Shape(..), ShapeData, affineTransform, draw, moveBy, moveTo, scaleBy)
 
-{-| The Shape module defines Shape type which can take values
-of the form `Rect data` or `Ellipse data` and which provides
-functions for manipulating these shapes and rendering them
-into SVG.
+{-| This module exposes the Shape type. Values of this type
+can be manipulated mathematically and rendered in to SVG.
+
+
+# API
+
+@docs Shape, ShapeData, affineTransform, draw, moveBy, moveTo, scaleBy
+
 -}
 
 import Affine
@@ -13,11 +17,16 @@ import Svg.Attributes exposing (..)
 import Vector exposing (Vector)
 
 
+{-| A type for representing shapes: rectangles or ellipses
+-}
 type Shape
     = Rect ShapeData
     | Ellipse ShapeData
 
 
+{-| A type for representing the data needed
+to define a shape.
+-}
 type alias ShapeData =
     { center : Vector
     , dimensions : Vector
@@ -26,14 +35,16 @@ type alias ShapeData =
     }
 
 
-transform : Affine.Coefficients -> Shape -> Shape
-transform coefficients shape =
+{-| Transformm a shape by an affine function.
+-}
+affineTransform : Affine.Coefficients -> Shape -> Shape
+affineTransform coefficients shape =
     let
         shapeData =
             data shape
 
         newCenter =
-            Affine.transform coefficients shapeData.center
+            Affine.affineTransform coefficients shapeData.center
 
         newDimensions =
             Affine.linearTransform coefficients shapeData.dimensions
@@ -44,6 +55,8 @@ transform coefficients shape =
         updateData shape newShapeData
 
 
+{-| Produce an SVG representation of a shape.
+-}
 draw : Shape -> S.Svg msg
 draw shape =
     case shape of
@@ -74,6 +87,8 @@ data shape =
             data
 
 
+{-| Move the center of a shape.
+-}
 moveTo : Vector -> Shape -> Shape
 moveTo position shape =
     let
@@ -97,6 +112,8 @@ moveTo position shape =
                 Ellipse newShapeData
 
 
+{-| Translate the center of a shape.
+-}
 moveBy : Vector -> Shape -> Shape
 moveBy displacement shape =
     let
@@ -120,6 +137,8 @@ moveBy displacement shape =
                 Ellipse newShapeData
 
 
+{-| Rescale a shape.
+-}
 scaleBy : Float -> Shape -> Shape
 scaleBy factor shape =
     let

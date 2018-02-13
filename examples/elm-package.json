@@ -1,7 +1,7 @@
 {
     "version": "1.0.0",
-    "summary": "Example for GraphDisplay Package",
-    "repository": "https://github.com/user/project.git",
+    "summary": "Examples for Geometry Package",
+    "repository": "https://github.com/jxxcarlson/geometry.git",
     "license": "BSD3",
     "source-directories": [
         ".", "../src"
