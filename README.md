@@ -43,3 +43,5 @@ Here is how to render an ellipse into SVG:
 ```
 draw ellipse
 ```
+
+See the examples folder for demo code.
